@@ -13,29 +13,25 @@ use crate::err::YeeError;
 use crate::fields::{ColorMode, PowerStatus, Rgb};
 use crate::req::{Req, Transition};
 
-#[derive(Debug,Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Light {
     location: SocketAddrV4,
     id: String,
     model: String,
     fw_ver: u8,
-    support: HashSet<String>,
-    power: PowerStatus,
     bright: u8,
-    color_mode: ColorMode,
-
     // only valid for ColorMode::ColorTemperature
     ct: u16,
-
     // only valid for ColorMode::Color
     rgb: Rgb,
-
     // only valid for ColorMode::Hsv
     hue: u16,
     // only valid for ColorMode::Hsv
     sat: u8,
-
     name: String,
+    support: HashSet<String>,
+    power: PowerStatus,
+    color_mode: ColorMode,
 
     // wrapped in option for late init
     // if successfully made a Light, can always assume it is valid
@@ -45,9 +41,9 @@ pub struct Light {
     pub(crate) write: Option<BufWriter<TcpStream>>,
 }
 
-impl Clone for Light{
+impl Clone for Light {
     fn clone(&self) -> Self {
-        Light{
+        Light {
             location: self.location,
 
             id: self.id.clone(),
@@ -63,7 +59,7 @@ impl Clone for Light{
             sat: self.sat,
             name: self.name.clone(),
             read: None,
-            write: None
+            write: None,
         }
     }
 

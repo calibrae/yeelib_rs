@@ -40,7 +40,7 @@ impl YeeClient {
         }
     }
     ///
-    /// Source ip should be bindable, some machine have multiple interface and only one can be on the network...
+    /// Source ip should be bindable, some machine have multiple interface and  one can be the only one on the network...
     pub fn with_addr(multicast_addr: SocketAddrV4, local_port: u16, bind_address:Ipv4Addr) -> Result<YeeClient, YeeError> {
         // we don't know the IPs of the lights, so listen to all traffic
         let socket = UdpSocket::bind(SocketAddrV4::new(bind_address, local_port))?;
