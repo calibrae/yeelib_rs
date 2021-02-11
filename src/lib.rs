@@ -32,15 +32,19 @@ pub struct YeeClient {
 }
 
 impl YeeClient {
-    pub fn new() -> Result<YeeClient, YeeError> {
+    pub fn new(bind_address: Option<Ipv4Addr>) -> Result<YeeClient, YeeError> {
         let addr = SocketAddrV4::new(MULTICAST_ADDR, MULTICAST_PORT);
-        Self::with_addr(addr, DEFAULT_LOCAL_PORT)
+        match bind_address {
+            None => Self::with_addr(addr, DEFAULT_LOCAL_PORT, Ipv4Addr::UNSPECIFIED),
+            Some(a) => Self::with_addr(addr, DEFAULT_LOCAL_PORT, a)
+        }
     }
-
-    pub fn with_addr(multicast_addr: SocketAddrV4, local_port: u16) -> Result<YeeClient, YeeError> {
+    ///
+    /// Source ip should be bindable, some machine have multiple interface and only one can be on the network...
+    pub fn with_addr(multicast_addr: SocketAddrV4, local_port: u16, bind_address:Ipv4Addr) -> Result<YeeClient, YeeError> {
         // we don't know the IPs of the lights, so listen to all traffic
-        let socket = UdpSocket::bind(SocketAddrV4::new(Ipv4Addr::UNSPECIFIED, local_port))?;
-        socket.join_multicast_v4(multicast_addr.ip(), &Ipv4Addr::UNSPECIFIED)?;
+        let socket = UdpSocket::bind(SocketAddrV4::new(bind_address, local_port))?;
+        socket.join_multicast_v4(multicast_addr.ip(), &bind_address)?;
         socket.set_nonblocking(true)?;
 
         Ok(YeeClient { seeker: socket, multicast_addr })

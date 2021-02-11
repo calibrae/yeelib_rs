@@ -1,11 +1,12 @@
 use std::fmt::{self, Display, Formatter};
 use std::str::FromStr;
+use serde::{Deserialize, Serialize};
 
 use crate::err::YeeError;
 
 const HEX_FFFFFF: u32 = 16777215;
 
-#[derive(Debug, Copy, Clone, Eq, PartialEq)]
+#[derive(Debug, Copy, Clone, Eq, PartialEq,Serialize, Deserialize)]
 pub enum PowerStatus {
     On,
     Off,
@@ -42,7 +43,7 @@ impl FromStr for PowerStatus {
 }
 
 
-#[derive(Debug, Copy, Clone, Eq, PartialEq)]
+#[derive(Debug, Copy, Clone, Eq, PartialEq, Serialize, Deserialize)]
 pub enum ColorMode {
     Color,
     ColorTemperature,
@@ -73,7 +74,7 @@ impl FromStr for ColorMode {
 }
 
 
-#[derive(Debug, Copy, Clone, Eq, PartialEq)]
+#[derive(Debug, Copy, Clone, Eq, PartialEq, Serialize, Deserialize)]
 pub struct Rgb {
     pub red: u8,
     pub blue: u8,

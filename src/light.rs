@@ -3,6 +3,8 @@ use std::hash::{Hash, Hasher};
 use std::io::{BufRead, BufReader, BufWriter, Write};
 use std::net::{SocketAddr, SocketAddrV4, TcpStream};
 
+use serde::{Deserialize, Serialize};
+
 use lazy_static::*;
 use regex::Regex;
 use serde_json::json;
@@ -10,9 +12,8 @@ use serde_json::json;
 use crate::err::YeeError;
 use crate::fields::{ColorMode, PowerStatus, Rgb};
 use crate::req::{Req, Transition};
-use std::net::Shutdown::Read;
 
-#[derive(Debug)]
+#[derive(Debug,Serialize, Deserialize)]
 pub struct Light {
     location: SocketAddrV4,
     id: String,
@@ -38,8 +39,37 @@ pub struct Light {
 
     // wrapped in option for late init
     // if successfully made a Light, can always assume it is valid
+    #[serde(skip_serializing, skip_deserializing)]
     pub(crate) read: Option<BufReader<TcpStream>>,
+    #[serde(skip_serializing, skip_deserializing)]
     pub(crate) write: Option<BufWriter<TcpStream>>,
+}
+
+impl Clone for Light{
+    fn clone(&self) -> Self {
+        Light{
+            location: self.location,
+
+            id: self.id.clone(),
+            model: self.model.clone(),
+            fw_ver: self.fw_ver,
+            support: self.support.clone(),
+            power: self.power,
+            bright: self.bright,
+            color_mode: self.color_mode,
+            ct: self.ct,
+            rgb: self.rgb,
+            hue: self.hue,
+            sat: self.sat,
+            name: self.name.clone(),
+            read: None,
+            write: None
+        }
+    }
+
+    fn clone_from(&mut self, source: &Self) {
+        unimplemented!()
+    }
 }
 
 lazy_static! {
