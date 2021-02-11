@@ -29,10 +29,11 @@ pub struct Light {
     // only valid for ColorMode::Hsv
     sat: u8,
     name: String,
-    support: HashSet<String>,
     power: PowerStatus,
     color_mode: ColorMode,
 
+    #[serde(skip_serializing, skip_deserializing)]
+    support: HashSet<String>,
     // wrapped in option for late init
     // if successfully made a Light, can always assume it is valid
     #[serde(skip_serializing, skip_deserializing)]
